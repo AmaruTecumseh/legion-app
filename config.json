@@ -1,0 +1,29 @@
+{
+  "version": "3.1.0",
+  "cloudflare_worker": {
+    "url": "https://legion-proxy.amarutecumseh.workers.dev",
+    "enabled": true,
+    "timeout": 30000
+  },
+  "mods": {
+    "core": [
+      { "id": "chat",     "name": "Chat",      "file": "mods/chat.js",           "removable": false },
+      { "id": "voice",    "name": "Voice",      "file": "mods/voice.js",          "removable": false },
+      { "id": "image",    "name": "Image",      "file": "mods/image-gen.js",      "removable": false },
+      { "id": "code",     "name": "Code",       "file": "mods/code-ide.js",       "removable": false },
+      { "id": "memory",   "name": "Memory",     "file": "mods/memory-viewer.js",  "removable": false },
+      { "id": "modgen",   "name": "Mod Lab",    "file": "mods/mod-generator.js",  "removable": false },
+      { "id": "settings", "name": "Settings",   "file": "mods/settings.js",       "removable": false },
+      { "id": "about",    "name": "About",      "file": "mods/about.js",          "removable": false }
+    ],
+    "user": []
+  },
+  "inference": {
+    "use_local_models": true,
+    "council_enabled": true,
+    "complexity_threshold": 0.4
+  },
+  "ui": { "theme": "dark-neon", "animations_enabled": true },
+  "storage": { "db_name": "legion_v3" },
+  "debug": { "verbose": false }
+}
