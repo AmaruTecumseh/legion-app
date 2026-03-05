@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#06080d">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>LEGION</title>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div id="legion-app">
+        <header id="legion-header">
+            <div class="header-inner">
+                <h1 class="legion-logo">LEGION</h1>
+                <div id="status-dot" class="status-dot idle"></div>
+            </div>
+            <div id="blob-container"><canvas id="blob-canvas"></canvas></div>
+        </header>
+        <main id="mod-container">
+            <div id="mod-content">
+                <div class="loading-screen">
+                    <div class="loading-logo">LEGION <span style="font-size:1.8rem">&#x267E;</span></div>
+                    <div class="loading-bar-wrap">
+                        <div class="loading-bar"><div id="loading-progress"></div></div>
+                        <div id="loading-pct" class="loading-pct">0%</div>
+                    </div>
+                    <div class="load-statuses">
+                        <div class="load-status-item" id="load-status-config"><span class="load-dot"></span>Config</div>
+                        <div class="load-status-item" id="load-status-storage"><span class="load-dot"></span>Storage</div>
+                        <div class="load-status-item" id="load-status-memory"><span class="load-dot"></span>Memory</div>
+                        <div class="load-status-item" id="load-status-vault"><span class="load-dot"></span>Vault</div>
+                        <div class="load-status-item" id="load-status-blob"><span class="load-dot"></span>Visualizer</div>
+                        <div class="load-status-item" id="load-status-mods"><span class="load-dot"></span>Mods</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <div id="bottom-drawer" class="drawer-closed">
+            <div id="drawer-handle"><div class="handle-bar"></div></div>
+            <div id="mod-list"></div>
+        </div>
+    </div>
+
+    <script src="legion-core.js"></script>
+    <script>
+        // Load inference engine with file:// fallback
+        (function() {
+            var s = document.createElement('script');
+            s.src = 'core/inference-engine.js?' + Date.now();
+            s.onerror = function() {
+                // file:// fallback: fetch + eval
+                fetch('core/inference-engine.js')
+                    .then(function(r) { return r.text(); })
+                    .then(function(code) { eval(code); })
+                    .catch(function() {
+                        // Inference engine unavailable, app will use cloud only
+                        console.warn('[LEGION] Inference engine not loaded, using cloud fallback');
+                        window.LEGION_INFERENCE = { isReady: function() { return false; }, startBackgroundLoad: function() {}, generateLocal: async function() { return null; }, getStatus: function() { return 'unavailable'; } };
+                        if (window.LEGION) LEGION.inference = window.LEGION_INFERENCE;
+                    });
+            };
+            document.head.appendChild(s);
+        })();
+    </script>
+
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("service-worker.js").catch(e => console.warn("SW:", e));
+        }
+        document.addEventListener("DOMContentLoaded", () => {
+            if (window.LEGION) LEGION.init();
+        });
+    </script>
+</body>
+</html>
